@@ -13,10 +13,12 @@ public class UserResponse {
     private String username;
     private String firstname;
     private String lastname;
+
     private Set<UserPostResponse> posts;
 
     private Set<String> following;
     private Set<String> followers;
+    private String bio;
 
     @Override
     public boolean equals(Object obj) {

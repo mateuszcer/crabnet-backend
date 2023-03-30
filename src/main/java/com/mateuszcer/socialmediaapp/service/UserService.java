@@ -59,7 +59,7 @@ public class UserService implements IUserService{
         return userRepository.existsByEmail(email);
     }
 
-    public boolean followUser(String username, String toFollowUsername) {
+    public Boolean followUser(String username, String toFollowUsername) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         Optional<User> toFollowOpt = userRepository.findByUsername(toFollowUsername);
 
@@ -73,13 +73,13 @@ public class UserService implements IUserService{
 
         Followers follow = new Followers(user, toFollow);
         if(following.contains(follow)) {
-            return false;
+            return Boolean.FALSE;
         }
         followersService.update(follow);
-        return true;
+        return Boolean.TRUE;
     }
 
-    public boolean unFollowUser(String username, String toFollowUsername) {
+    public Boolean unFollowUser(String username, String toFollowUsername) {
         Optional<User> userOpt = userRepository.findByUsername(username);
         Optional<User> toUnFollowOpt = userRepository.findByUsername(toFollowUsername);
 
@@ -89,15 +89,14 @@ public class UserService implements IUserService{
 
         User user = userOpt.get();
         User toUnFollow = toUnFollowOpt.get();
-        Set<Followers> following = user.getFollowing();
 
         Optional<Followers> followersOpt = followersService.getByToAndFrom(user, toUnFollow);
         if(followersOpt.isEmpty())
-            return false;
+            return Boolean.FALSE;
         Followers followers = followersOpt.get();
 
         followersService.delete(followers);
-        return true;
+        return Boolean.TRUE;
 
 
     }
@@ -193,6 +192,20 @@ public class UserService implements IUserService{
         users.addAll(userRepository.findByFirstnameLike(pattern));
         users.addAll(userRepository.findByLastnameLike(pattern));
         return users;
+    }
+
+    public Boolean updateBio(String username, String bio) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+
+        if(userOpt.isEmpty()) {
+            return Boolean.FALSE;
+        }
+
+        User user = userOpt.get();
+
+        user.setBio(bio);
+        return Boolean.TRUE;
+
     }
 
 

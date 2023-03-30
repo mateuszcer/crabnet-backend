@@ -34,6 +34,8 @@ public class User {
 
     private String password;
 
+    private String bio;
+
     private EGender gender;
     private Boolean enabled = Boolean.FALSE;
 

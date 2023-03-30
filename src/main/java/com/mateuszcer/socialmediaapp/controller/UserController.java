@@ -2,6 +2,7 @@ package com.mateuszcer.socialmediaapp.controller;
 
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.payload.Mapper;
+import com.mateuszcer.socialmediaapp.payload.request.BioRequest;
 import com.mateuszcer.socialmediaapp.payload.response.UserResponse;
 import com.mateuszcer.socialmediaapp.repository.UserRepository;
 import com.mateuszcer.socialmediaapp.service.UserService;
@@ -77,6 +78,19 @@ public class UserController {
         if(userService.unFollowUser(principal.getName(), username))
             return ResponseEntity.ok("Unfollowed");
 
+        return ResponseEntity.badRequest().build();
+    }
+
+
+    @PostMapping(path="/user/bio")
+    public ResponseEntity<String> updateBio(@RequestBody BioRequest bio, Principal principal) {
+
+        if(bio.getBio().length() > 100) {
+            return ResponseEntity.badRequest().body("Bio too long");
+        }
+        if(userService.updateBio(principal.getName(), bio.getBio())) {
+            return ResponseEntity.ok("Bio updated");
+        }
         return ResponseEntity.badRequest().build();
     }
 
