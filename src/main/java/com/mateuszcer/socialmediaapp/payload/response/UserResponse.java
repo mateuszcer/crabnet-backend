@@ -17,4 +17,20 @@ public class UserResponse {
 
     private Set<String> following;
     private Set<String> followers;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        UserResponse userResponse = (UserResponse) obj;
+        return this.username.equals(userResponse.username);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
 }

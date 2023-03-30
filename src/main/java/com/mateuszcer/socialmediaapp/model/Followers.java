@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -27,5 +29,18 @@ public class Followers {
     public Followers(User from, User to) {
         this.from = from;
         this.to = to;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Followers followers = (Followers) o;
+        return from.equals(followers.from) && to.equals(followers.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to);
     }
 }

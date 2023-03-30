@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,24 +46,38 @@ public class UserController {
                         .collect(Collectors.toList()));
     }
 
-    @GetMapping(path="/user/self")
-    public ResponseEntity<UserResponse>
-    getSelfInfo(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(mapper.toResponse(user));
-    }
 
     @GetMapping(path="/user/{username}")
     public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
-        User user = userService.findByUsername(username);
-        return ResponseEntity.ok(mapper.toResponse(user));
+        Optional<User> userOpt = userService.findByUsername(username);
+        return userOpt.map(user -> ResponseEntity.ok(
+                mapper.toResponse(user))).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping(path="/user/all/{pattern}")
+    public ResponseEntity<Set<UserResponse>> getAllByPattern(@PathVariable String pattern) {
+        List<User> matchers = userService.findAllByPattern(pattern+"%");
+        HashSet<UserResponse> res = new HashSet(matchers.stream().map(mapper::toResponse).collect(Collectors.toSet()));
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping(path="/user/follow/{username}")
     public ResponseEntity<String> followUser(@PathVariable String username,
                                                    Principal principal) {
-        userService.followUser(principal.getName(), username);
-        return ResponseEntity.ok("Followed");
+        if(userService.followUser(principal.getName(), username)) {
+            return ResponseEntity.ok("Followed");
+        }
+        return ResponseEntity.badRequest().build();
+
+    }
+
+    @PostMapping(path="/user/unfollow/{username}")
+    public ResponseEntity<String> unFollowUser(@PathVariable String username,
+                                             Principal principal) {
+        if(userService.unFollowUser(principal.getName(), username))
+            return ResponseEntity.ok("Unfollowed");
+
+        return ResponseEntity.badRequest().build();
     }
 
 

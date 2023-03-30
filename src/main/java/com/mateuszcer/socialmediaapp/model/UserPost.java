@@ -30,10 +30,6 @@ public class UserPost {
     private LocalDateTime updateDateTime;
 
     private String content;
-
-    @ManyToMany
-    private Set<User> likedBy = new HashSet<>();
-
     @OneToMany(mappedBy="source")
     private Set<Comment> comments = new HashSet<>();
 
@@ -41,5 +37,8 @@ public class UserPost {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable=false)
     private User author;
+
+    @OneToMany(mappedBy="to")
+    private Set<Likes> likedBy;
 
 }

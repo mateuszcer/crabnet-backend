@@ -2,6 +2,7 @@ package com.mateuszcer.socialmediaapp.payload.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -16,5 +17,7 @@ public class UserPostResponse {
 
     private Long id;
 
-    private Set<UserResponse> likedBy;
+    private Set<String> likedBy;
+
+    private LocalDateTime creationTime;
 }

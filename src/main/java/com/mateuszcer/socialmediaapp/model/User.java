@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -40,6 +41,9 @@ public class User {
     @OneToMany(mappedBy="author")
     private Set<Comment> comments = new HashSet<>();
 
+    @OneToMany(mappedBy = "from")
+    private Set<Likes> likedPosts;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -54,4 +58,18 @@ public class User {
 
     @OneToMany(mappedBy="from")
     private Set<Followers> following;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

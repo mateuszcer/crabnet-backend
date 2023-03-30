@@ -14,11 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
+@CrossOrigin("http://127.0.0.1:5173")
 public class UserPostController {
     private final UserPostService userPostService;
 
@@ -32,19 +34,23 @@ public class UserPostController {
     }
 
     @PostMapping(path="/user_post/create")
-    public ResponseEntity<PostCreationResponse> createPost(@RequestBody PostCreationRequest postCreationRequest,
+    public ResponseEntity<UserPostResponse> createPost(@RequestBody PostCreationRequest postCreationRequest,
                                                Principal principal)
     {
-        User author;
-        author = userService.findByUsername(principal.getName());
+
+        Optional<User> userOpt = userService.findByUsername(principal.getName());
+        if(userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        User author = userOpt.get();
         String content = postCreationRequest.getContent();
         UserPost userPost = userPostService.createPost(content, author);
-        return ResponseEntity.ok(new PostCreationResponse(content, author.getUsername(),
-                userPost.getCreateDateTime()));
+        userPost.setLikedBy(new HashSet<>());
+        return ResponseEntity.ok(mapper.toResponse(userPost));
     }
 
     @PostMapping(path="/user_post/like")
-    public ResponseEntity<?> createPost(@RequestParam(name="id") Long userPostId, Principal principal)
+    public ResponseEntity<?> likePost(@RequestParam(name="id") Long userPostId, Principal principal)
     {
 
         Optional<UserPost> userPostOpt = userPostService.getById(userPostId);
@@ -52,7 +58,13 @@ public class UserPostController {
             return ResponseEntity.notFound().build();
         }
         UserPost userPost = userPostOpt.get();
-        User user = userService.findByUsername(principal.getName());
+        Optional<User> userOpt = userService.findByUsername(principal.getName());
+
+        if(userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userOpt.get();
         userPostService.likePost(userPost, user);
         return ResponseEntity.ok("Post liked successfully");
     }
@@ -67,9 +79,25 @@ public class UserPostController {
             return ResponseEntity.notFound().build();
         }
 
+
         User user = userOpt.get();
+
+
+
+
         List<UserPost> posts = userPostService.getByUser(user);
         return ResponseEntity.ok(posts.stream().map(mapper::toResponse).collect(Collectors.toList()));
     }
+
+
+    @GetMapping("/user_post/newest/{username}")
+    public ResponseEntity<List<UserPostResponse>> getNewest(@PathVariable String username) {
+        Optional<User> userOpt = userService.findByUsername(username);
+
+        return userOpt.map(user -> ResponseEntity.ok(userPostService.getNewest(user).stream().map(mapper::toResponse)
+                .collect(Collectors.toList()))).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+
 
 }

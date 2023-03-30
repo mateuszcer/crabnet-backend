@@ -11,7 +11,7 @@ public interface IUserService {
 
     public Boolean existsById(Long id);
 
-    public User findByUsername(String username);
+    public Optional<User> findByUsername(String username);
 
     public Boolean existsByUsername(String username);
     public Optional<User> findByEmail(String email);

@@ -23,11 +23,14 @@ public class UserService implements IUserService{
 
     private final FollowersService followersService;
 
-    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, FollowersService followersService) {
+    private final LikesService likesService;
+
+    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, FollowersService followersService, LikesService likesService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.followersService = followersService;
+        this.likesService = likesService;
     }
     @Override
     public Optional<User> findById(Long id) {
@@ -38,7 +41,7 @@ public class UserService implements IUserService{
         return userRepository.existsById(id);
     }
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
     @Override
@@ -57,16 +60,46 @@ public class UserService implements IUserService{
     }
 
     public boolean followUser(String username, String toFollowUsername) {
-        User user = userRepository.findByUsername(username);
-        User toFollow = userRepository.findByUsername(toFollowUsername);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> toFollowOpt = userRepository.findByUsername(toFollowUsername);
 
+        if(userOpt.isEmpty() || toFollowOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+        User toFollow = toFollowOpt.get();
         Set<Followers> following = user.getFollowing();
+
         Followers follow = new Followers(user, toFollow);
-        following.add(follow);
+        if(following.contains(follow)) {
+            return false;
+        }
         followersService.update(follow);
-        userRepository.save(user);
-        userRepository.save(toFollow);
         return true;
+    }
+
+    public boolean unFollowUser(String username, String toFollowUsername) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        Optional<User> toUnFollowOpt = userRepository.findByUsername(toFollowUsername);
+
+        if(userOpt.isEmpty() || toUnFollowOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+        User toUnFollow = toUnFollowOpt.get();
+        Set<Followers> following = user.getFollowing();
+
+        Optional<Followers> followersOpt = followersService.getByToAndFrom(user, toUnFollow);
+        if(followersOpt.isEmpty())
+            return false;
+        Followers followers = followersOpt.get();
+
+        followersService.delete(followers);
+        return true;
+
+
     }
 
     @Override
@@ -114,8 +147,9 @@ public class UserService implements IUserService{
         roles.add(userRole);
 
         newUser.setRoles(roles);
+        newUser = userRepository.save(newUser);
 
-        return userRepository.save(newUser);
+        return newUser;
     }
 
     @Override
@@ -124,16 +158,44 @@ public class UserService implements IUserService{
     }
 
     public Set<User> getFollowers(String username) {
-        User user = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isEmpty()) {
+            return new HashSet<>();
+        }
+        User user = userOpt.get();
         List<Followers> followers = followersService.getAllByTo(user);
         return followers.stream().map(Followers::getFrom).collect(Collectors.toSet());
     }
 
     public Set<User> getFollowing(String username) {
-        User user = userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isEmpty()) {
+            return new HashSet<>();
+        }
+        User user = userOpt.get();
         List<Followers> followers = followersService.getAllByFrom(user);
         return followers.stream().map(Followers::getTo).collect(Collectors.toSet());
     }
+
+    public Set<UserPost> getLiked(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isEmpty()) {
+            return new HashSet<>();
+        }
+        User user = userOpt.get();
+        List<Likes> likes = likesService.getAllByFrom(user);
+
+        return likes.stream().map(Likes::getTo).collect(Collectors.toSet());
+    }
+
+    public List<User> findAllByPattern(String pattern) {
+        List<User> users = userRepository.findByUsernameLike(pattern);
+        users.addAll(userRepository.findByFirstnameLike(pattern));
+        users.addAll(userRepository.findByLastnameLike(pattern));
+        return users;
+    }
+
+
 
 
 

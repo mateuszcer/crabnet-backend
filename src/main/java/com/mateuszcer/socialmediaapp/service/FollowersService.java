@@ -6,6 +6,7 @@ import com.mateuszcer.socialmediaapp.repository.FollowersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FollowersService {
@@ -26,5 +27,13 @@ public class FollowersService {
 
     public Followers update(Followers followers) {
         return followersRepository.save(followers);
+    }
+
+    public void delete(Followers followers) {
+        followersRepository.delete(followers);
+    }
+
+    public Optional<Followers> getByToAndFrom(User userFrom, User userTo) {
+        return followersRepository.findByFromAndTo(userFrom, userTo);
     }
 }

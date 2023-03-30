@@ -24,11 +24,14 @@ public class Mapper {
     }
 
     public UserPostResponse toResponse(UserPost userPost) {
+
         UserPostResponse userPostResponse = new UserPostResponse();
         userPostResponse.setAuthorUsername(userPost.getAuthor().getUsername());
         userPostResponse.setContent(userPost.getContent());
         userPostResponse.setId(userPost.getId());
-        userPostResponse.setLikedBy(userPost.getLikedBy().stream().map(this::toResponse).collect(Collectors.toSet()));
+        userPostResponse.setLikedBy(userPost.getLikedBy().stream().map(likes -> likes.getFrom().getUsername()).collect(Collectors.toSet()));
+        userPostResponse.setCreationTime(userPost.getCreateDateTime());
+
         return userPostResponse;
     }
 
