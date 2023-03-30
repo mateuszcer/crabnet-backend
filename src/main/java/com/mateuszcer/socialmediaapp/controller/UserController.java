@@ -94,6 +94,17 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PostMapping(path="/user/picture/{id}")
+    public ResponseEntity<String> updateBio(@PathVariable Integer id, Principal principal) {
+
+        if(id >= 6) {
+            return ResponseEntity.badRequest().body("Id out of range");
+        }
+        if(userService.updatePicture(principal.getName(), id)) {
+            return ResponseEntity.ok("Picture updated");
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
 
 

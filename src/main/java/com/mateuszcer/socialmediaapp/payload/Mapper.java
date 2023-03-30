@@ -19,7 +19,8 @@ public class Mapper {
                 user.getPosts().stream().map(this::toResponse).collect(Collectors.toSet()),
                 user.getFollowing().stream().map(followers -> followers.getTo().getUsername()).collect(Collectors.toSet()),
                 user.getFollowers().stream().map(followers -> followers.getFrom().getUsername()).collect(Collectors.toSet()),
-                user.getBio()
+                user.getBio(),
+                user.getProfilePicture()
         );
 
     }

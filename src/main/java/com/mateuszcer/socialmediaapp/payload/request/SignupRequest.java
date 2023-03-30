@@ -14,10 +14,13 @@ public class SignupRequest {
     @ValidEmail
     private String email;
 
+    @NotEmpty(message = "Firstname must not be empty")
     private String firstname;
 
+    @NotEmpty(message = "Lastname must not be empty")
     private String lastname;
 
+    @NotEmpty(message = "Gender must not be empty")
     private String gender;
 
     @NotEmpty(message = "Username must not be empty")
@@ -25,5 +28,8 @@ public class SignupRequest {
 
     @NotEmpty(message = "Password must not be empty")
     private String password;
+
+    @NotEmpty(message = "Picture id must be provided")
+    private Integer pictureId;
 
 }

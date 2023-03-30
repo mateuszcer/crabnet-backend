@@ -19,6 +19,7 @@ public class UserResponse {
     private Set<String> following;
     private Set<String> followers;
     private String bio;
+    private Integer pictureId;
 
     @Override
     public boolean equals(Object obj) {

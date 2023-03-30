@@ -138,6 +138,7 @@ public class UserService implements IUserService{
                 .password(passwordEncoder.encode(password))
                 .gender(gender)
                 .enabled(Boolean.FALSE)
+                .profilePicture(signupRequest.getPictureId())
                 .build();
 
         Set<Role> roles = new HashSet<>();
@@ -209,7 +210,17 @@ public class UserService implements IUserService{
     }
 
 
+    public boolean updatePicture(String username, Integer id) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
 
+        if(userOpt.isEmpty()) {
+            return Boolean.FALSE;
+        }
 
+        User user = userOpt.get();
 
+        user.setProfilePicture(id);
+        return Boolean.TRUE;
+
+    }
 }

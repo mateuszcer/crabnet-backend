@@ -37,6 +37,8 @@ public class User {
     private String bio;
 
     private EGender gender;
+
+    private Integer profilePicture; // ID of default picture stored on the frontend
     private Boolean enabled = Boolean.FALSE;
 
 
