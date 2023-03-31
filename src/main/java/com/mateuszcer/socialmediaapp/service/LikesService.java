@@ -8,7 +8,9 @@ import com.mateuszcer.socialmediaapp.repository.FollowersRepository;
 import com.mateuszcer.socialmediaapp.repository.LikesRepository;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LikesService {
@@ -31,5 +33,17 @@ public class LikesService {
 
     public Likes update(Likes likes) {
         return likesRepository.save(likes);
+    }
+
+    public void delete(Likes likes) {
+        likesRepository.delete(likes);
+    }
+
+    public Boolean existsByFromAndTo(User user, UserPost userPost) {
+        return likesRepository.existsByFromAndTo(user, userPost);
+    }
+
+    public Optional<Likes> findByFromAndTo(User user, UserPost userPost) {
+        return likesRepository.findByFromAndTo(user, userPost);
     }
 }

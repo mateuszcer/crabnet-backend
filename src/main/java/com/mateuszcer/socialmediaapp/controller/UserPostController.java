@@ -65,8 +65,32 @@ public class UserPostController {
         }
 
         User user = userOpt.get();
-        userPostService.likePost(userPost, user);
-        return ResponseEntity.ok("Post liked successfully");
+        if(userPostService.likePost(userPost, user)) {
+            return ResponseEntity.ok("Post liked successfully");
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping(path="/user_post/dislike")
+    public ResponseEntity<?> dislikePost(@RequestParam(name="id") Long userPostId, Principal principal)
+    {
+
+        Optional<UserPost> userPostOpt = userPostService.getById(userPostId);
+        if(userPostOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        UserPost userPost = userPostOpt.get();
+        Optional<User> userOpt = userService.findByUsername(principal.getName());
+
+        if(userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userOpt.get();
+        if(userPostService.dislikePost(userPost, user)) {
+            return ResponseEntity.ok("Post disliked successfully");
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 

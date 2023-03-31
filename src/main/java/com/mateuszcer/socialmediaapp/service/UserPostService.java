@@ -26,9 +26,14 @@ public class UserPostService {
     }
 
 
-    public final UserPost likePost(UserPost userPost, User user) {
+    public final Boolean likePost(UserPost userPost, User user) {
+        if(likesService.existsByFromAndTo(user, userPost)) {
+            return Boolean.FALSE;
+        }
+
         Likes likes = new Likes(user, userPost);
-        return likesService.update(likes).getTo();
+        likesService.update(likes);
+        return Boolean.TRUE;
     }
 
     public UserPost createPost(String content, User author) {
@@ -40,6 +45,18 @@ public class UserPostService {
         System.out.println(userPost.getLikedBy());
         return this.userPostRepository.save(
                 userPost);
+    }
+
+    public Boolean dislikePost(UserPost userPost, User user) {
+        Optional<Likes> likesOpt = likesService.findByFromAndTo(user, userPost);
+
+        if(likesOpt.isEmpty()) {
+            return Boolean.FALSE;
+        }
+
+        Likes likes = likesOpt.get();
+        likesService.delete(likes);
+        return Boolean.TRUE;
     }
 
     public List<UserPost> getByUser(User user) {
