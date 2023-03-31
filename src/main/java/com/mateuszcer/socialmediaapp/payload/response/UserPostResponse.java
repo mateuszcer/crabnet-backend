@@ -20,4 +20,6 @@ public class UserPostResponse {
     private Set<String> likedBy;
 
     private LocalDateTime creationTime;
+
+    private Integer authorPictureId;
 }

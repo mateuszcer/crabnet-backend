@@ -21,7 +21,7 @@ public class UserPostService {
         this.likesService = likesService;
     }
 
-    public final Optional<UserPost> getById(Long id) {
+    public final Optional<UserPost> findById(Long id) {
         return userPostRepository.findById(id);
     }
 
@@ -66,5 +66,12 @@ public class UserPostService {
     public List<UserPost> getNewest(User author) {
         return userPostRepository.findFirst25ByAuthor(author);
     }
+
+    public void delete(UserPost userPost) {
+
+        likesService.deleteAllByPost(userPost);
+        userPostRepository.delete(userPost);
+    }
+
 
 }

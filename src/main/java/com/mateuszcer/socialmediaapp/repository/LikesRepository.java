@@ -18,4 +18,6 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     public Boolean existsByFromAndTo(User user, UserPost userPost);
 
     Optional<Likes> findByFromAndTo(User user, UserPost userPost);
+
+
 }

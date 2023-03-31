@@ -46,4 +46,13 @@ public class LikesService {
     public Optional<Likes> findByFromAndTo(User user, UserPost userPost) {
         return likesRepository.findByFromAndTo(user, userPost);
     }
+
+    public List<Likes> findAllByTo(UserPost userPost) {
+        return likesRepository.findAllByTo(userPost);
+    }
+
+    public void deleteAllByPost(UserPost userPost) {
+        List<Likes> toDelete = findAllByTo(userPost);
+        likesRepository.deleteAll(toDelete);
+    }
 }

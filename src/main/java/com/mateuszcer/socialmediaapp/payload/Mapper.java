@@ -33,7 +33,7 @@ public class Mapper {
         userPostResponse.setId(userPost.getId());
         userPostResponse.setLikedBy(userPost.getLikedBy().stream().map(likes -> likes.getFrom().getUsername()).collect(Collectors.toSet()));
         userPostResponse.setCreationTime(userPost.getCreateDateTime());
-
+        userPostResponse.setAuthorPictureId(userPost.getAuthor().getProfilePicture());
         return userPostResponse;
     }
 

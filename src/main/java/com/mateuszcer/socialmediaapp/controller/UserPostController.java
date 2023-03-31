@@ -4,7 +4,6 @@ import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
 import com.mateuszcer.socialmediaapp.payload.Mapper;
 import com.mateuszcer.socialmediaapp.payload.request.PostCreationRequest;
-import com.mateuszcer.socialmediaapp.payload.response.PostCreationResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserPostResponse;
 import com.mateuszcer.socialmediaapp.service.UserPostService;
 import com.mateuszcer.socialmediaapp.service.UserService;
@@ -49,11 +48,20 @@ public class UserPostController {
         return ResponseEntity.ok(mapper.toResponse(userPost));
     }
 
+    @PostMapping(path="/user_post/{id}")
+    public ResponseEntity<UserPostResponse> createPost(@PathVariable Long id)
+    {
+
+        Optional<UserPost> userPostOpt = userPostService.findById(id);
+        return userPostOpt.map(userPost -> ResponseEntity.ok(mapper.toResponse(userPost)))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
     @PostMapping(path="/user_post/like")
     public ResponseEntity<?> likePost(@RequestParam(name="id") Long userPostId, Principal principal)
     {
 
-        Optional<UserPost> userPostOpt = userPostService.getById(userPostId);
+        Optional<UserPost> userPostOpt = userPostService.findById(userPostId);
         if(userPostOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -75,7 +83,7 @@ public class UserPostController {
     public ResponseEntity<?> dislikePost(@RequestParam(name="id") Long userPostId, Principal principal)
     {
 
-        Optional<UserPost> userPostOpt = userPostService.getById(userPostId);
+        Optional<UserPost> userPostOpt = userPostService.findById(userPostId);
         if(userPostOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -120,6 +128,25 @@ public class UserPostController {
 
         return userOpt.map(user -> ResponseEntity.ok(userPostService.getNewest(user).stream().map(mapper::toResponse)
                 .collect(Collectors.toList()))).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping("/user_post/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id, Principal principal) {
+        Optional<UserPost> userPostOpt = userPostService.findById(id);
+
+        if(userPostOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserPost userPost = userPostOpt.get();
+
+        if(!principal.getName().equals(userPost.getAuthor().getUsername())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        userPostService.delete(userPost);
+
+        return ResponseEntity.ok("Post deleted");
     }
 
 
