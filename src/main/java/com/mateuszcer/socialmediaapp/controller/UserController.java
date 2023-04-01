@@ -58,7 +58,7 @@ public class UserController {
     @GetMapping(path="/user/all/{pattern}")
     public ResponseEntity<Set<UserResponse>> getAllByPattern(@PathVariable String pattern) {
         List<User> matchers = userService.findAllByPattern(pattern+"%");
-        HashSet<UserResponse> res = new HashSet(matchers.stream().map(mapper::toResponse).collect(Collectors.toSet()));
+        HashSet<UserResponse> res = matchers.stream().map(mapper::toResponse).collect(Collectors.toCollection(HashSet::new));
         return ResponseEntity.ok(res);
     }
 

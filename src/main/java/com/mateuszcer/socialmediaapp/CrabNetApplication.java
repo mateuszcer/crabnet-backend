@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PurrgramApplication {
+public class CrabNetApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PurrgramApplication.class, args);
+        SpringApplication.run(CrabNetApplication.class, args);
     }
 
 }

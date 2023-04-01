@@ -2,6 +2,7 @@ package com.mateuszcer.socialmediaapp.payload.request;
 
 import com.mateuszcer.socialmediaapp.validators.ValidEmail;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class SignupRequest {
     @NotEmpty(message = "Password must not be empty")
     private String password;
 
-    @NotEmpty(message = "Picture id must be provided")
+    @NotNull(message = "Picture id must be provided")
     private Integer pictureId;
 
 }
