@@ -1,8 +1,9 @@
 package com.mateuszcer.socialmediaapp.payload;
 
-import com.mateuszcer.socialmediaapp.model.Followers;
+import com.mateuszcer.socialmediaapp.model.Comment;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
+import com.mateuszcer.socialmediaapp.payload.response.CommentResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserPostResponse;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,18 @@ public class Mapper {
         userPostResponse.setLikedBy(userPost.getLikedBy().stream().map(likes -> likes.getFrom().getUsername()).collect(Collectors.toSet()));
         userPostResponse.setCreationTime(userPost.getCreateDateTime());
         userPostResponse.setAuthorPictureId(userPost.getAuthor().getProfilePicture());
+        userPostResponse.setComments(userPost.getComments().stream().map(this::toResponse).collect(Collectors.toSet()));
         return userPostResponse;
+    }
+
+    public CommentResponse toResponse(Comment comment) {
+        return new CommentResponse(
+                comment.getContent(),
+                comment.getAuthor().getUsername(),
+                comment.getAuthor().getProfilePicture(),
+                comment.getSource().getId(),
+                comment.getCreateDateTime()
+        );
     }
 
 

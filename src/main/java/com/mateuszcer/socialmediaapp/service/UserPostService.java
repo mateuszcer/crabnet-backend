@@ -1,11 +1,13 @@
 package com.mateuszcer.socialmediaapp.service;
 
+import com.mateuszcer.socialmediaapp.model.Comment;
 import com.mateuszcer.socialmediaapp.model.Likes;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
 import com.mateuszcer.socialmediaapp.repository.UserPostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +15,13 @@ import java.util.Optional;
 public class UserPostService {
 
     private final UserPostRepository userPostRepository;
-
     private final LikesService likesService;
+    private final CommentsService commentsService;
 
-    public UserPostService(UserPostRepository userPostRepository, LikesService likesService) {
+    public UserPostService(UserPostRepository userPostRepository, LikesService likesService, CommentsService commentsService) {
         this.userPostRepository = userPostRepository;
         this.likesService = likesService;
+        this.commentsService = commentsService;
     }
 
     public final Optional<UserPost> findById(Long id) {
@@ -41,8 +44,10 @@ public class UserPostService {
         UserPost userPost = UserPost.builder()
                 .content(content)
                 .author(author)
+                .likedBy(new HashSet<>())
+                .comments(new HashSet<>())
                 .build();
-        System.out.println(userPost.getLikedBy());
+
         return this.userPostRepository.save(
                 userPost);
     }
@@ -72,6 +77,15 @@ public class UserPostService {
         likesService.deleteAllByPost(userPost);
         userPostRepository.delete(userPost);
     }
+
+    public List<Comment> getAllComments(UserPost userPost) {
+        return commentsService.findAllBySource(userPost);
+    }
+
+    public Comment createComment(UserPost userPost, User author, String content) {
+        return commentsService.createComment(userPost, author, content);
+    }
+
 
 
 }

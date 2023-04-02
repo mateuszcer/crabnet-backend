@@ -22,7 +22,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     private String firstname;
 
@@ -39,8 +39,8 @@ public class User {
     private EGender gender;
 
     private Integer profilePicture; // ID of default picture stored on the frontend
-    private Boolean enabled = Boolean.FALSE;
 
+    private Boolean enabled = Boolean.FALSE;
 
     @OneToMany(mappedBy="author")
     private Set<Comment> comments = new HashSet<>();

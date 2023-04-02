@@ -1,19 +1,20 @@
 package com.mateuszcer.socialmediaapp.controller;
 
+import com.mateuszcer.socialmediaapp.model.Comment;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
 import com.mateuszcer.socialmediaapp.payload.Mapper;
+import com.mateuszcer.socialmediaapp.payload.request.CommentCreationRequest;
 import com.mateuszcer.socialmediaapp.payload.request.PostCreationRequest;
+import com.mateuszcer.socialmediaapp.payload.response.CommentResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserPostResponse;
 import com.mateuszcer.socialmediaapp.service.UserPostService;
 import com.mateuszcer.socialmediaapp.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class UserPostController {
     private final UserService userService;
 
     private final Mapper mapper;
-    public UserPostController(UserPostService userPostService, DaoAuthenticationProvider daoAuthenticationProvider, UserService userService, Mapper mapper) {
+    public UserPostController(UserPostService userPostService, UserService userService, Mapper mapper) {
         this.userPostService = userPostService;
         this.userService = userService;
         this.mapper = mapper;
@@ -44,7 +45,7 @@ public class UserPostController {
         User author = userOpt.get();
         String content = postCreationRequest.getContent();
         UserPost userPost = userPostService.createPost(content, author);
-        userPost.setLikedBy(new HashSet<>());
+
         return ResponseEntity.ok(mapper.toResponse(userPost));
     }
 
@@ -148,6 +149,44 @@ public class UserPostController {
 
         return ResponseEntity.ok("Post deleted");
     }
+
+    @GetMapping("/user_post/comments/{id}")
+    public ResponseEntity<Iterable<CommentResponse>> getAllComments(@PathVariable Long id) {
+        Optional<UserPost> userPostOpt = userPostService.findById(id);
+
+        if(userPostOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserPost userPost = userPostOpt.get();
+
+        List<Comment> comments = userPostService.getAllComments(userPost);
+
+        return ResponseEntity.ok(comments.stream().map(mapper::toResponse).collect(Collectors.toSet()));
+    }
+
+    @PostMapping("/user_post/comments/add")
+    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentCreationRequest commentCreationRequest,
+                                                            Principal principal) {
+        Optional<UserPost> userPostOpt = userPostService.findById(commentCreationRequest.getUserPostId());
+
+        if(userPostOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UserPost userPost = userPostOpt.get();
+        Optional<User> userOpt = userService.findByUsername(principal.getName());
+
+        if(userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userOpt.get();
+        Comment comment = userPostService.createComment(userPost, user, commentCreationRequest.getContent());
+        return ResponseEntity.ok(mapper.toResponse(comment));
+    }
+
+
 
 
 

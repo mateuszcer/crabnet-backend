@@ -30,6 +30,7 @@ public class UserPost {
     private LocalDateTime updateDateTime;
 
     private String content;
+
     @OneToMany(mappedBy="source")
     private Set<Comment> comments = new HashSet<>();
 
