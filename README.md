@@ -24,7 +24,7 @@ Go to the project directory
 Build project
 
 ```bash
-  ./gradlew buil
+  ./gradlew build
 ```
 
 Run jar file
@@ -37,9 +37,6 @@ Run jar file
 
 ```bash
   docker-compose build 
-```
-
-```bash
   docker-compose run 
 ```
 
@@ -79,8 +76,9 @@ INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 
 ## Features
 
-- Creating account
+- Creating account with email signup confirmation
 - Following other users
-- Sharing, liking and removing posts
+- Creating, liking, commenting and removing posts
 - Searching for users
 - Setting profile picture from set of defaults
+- Setting profile bio
