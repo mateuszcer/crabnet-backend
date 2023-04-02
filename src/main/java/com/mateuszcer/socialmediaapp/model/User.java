@@ -42,11 +42,14 @@ public class User {
 
     private Boolean enabled = Boolean.FALSE;
 
-    @OneToMany(mappedBy="author")
+    @OneToMany(mappedBy = "author")
     private Set<Comment> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "from")
     private Set<Likes> likedPosts;
+
+    @OneToMany(mappedBy = "from")
+    private Set<CommentLike> likedComments;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

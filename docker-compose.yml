@@ -26,5 +26,6 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - TZ=Europe/Warsaw
     depends_on:
       - docker-mysql

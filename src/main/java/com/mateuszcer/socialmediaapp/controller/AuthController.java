@@ -14,6 +14,7 @@ import com.mateuszcer.socialmediaapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,10 +46,14 @@ public class AuthController {
 
     private final RegisterVerificationTokenService tokenService;
 
+    @Value("${crabnet.client.url}")
+    private String clientUrl;
+
     @Autowired
     public AuthController(UserService userService, DaoAuthenticationProvider daoAuthenticationProvider,
                           JwtUtil jwtUtil, ApplicationEventPublisher applicationEventPublisher,
                           RegisterVerificationTokenService tokenService) {
+
         this.userService = userService;
         this.daoAuthenticationProvider = daoAuthenticationProvider;
         this.jwtUtil = jwtUtil;
@@ -58,6 +63,7 @@ public class AuthController {
 
     @PostMapping(path="/signin")
     public ResponseEntity<JwtResponse> signinUser(@RequestBody LoginRequest loginRequest) {
+
         Authentication authentication;
         authentication = daoAuthenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -83,6 +89,7 @@ public class AuthController {
                     .badRequest()
                     .body("Invalid registration form");
         }
+
 
         try {
 
@@ -110,7 +117,8 @@ public class AuthController {
     public RedirectView confirmRegistration
             (WebRequest request, @RequestParam("token") String token) {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://127.0.0.1:5173");
+
+        redirectView.setUrl(clientUrl);
         Locale locale = request.getLocale();
 
         RegisterVerificationToken verificationToken = tokenService.getVerificationToken(token);
@@ -131,12 +139,6 @@ public class AuthController {
         return redirectView;
     }
 
-    @RequestMapping("/to-be-redirected")
-    public RedirectView localRedirect() {
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://www.yahoo.com");
-        return redirectView;
-    }
 
     @GetMapping("/resendRegistrationToken")
     public ResponseEntity<?> resendRegistrationToken(

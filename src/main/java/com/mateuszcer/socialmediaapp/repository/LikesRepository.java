@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface LikesRepository extends JpaRepository<Likes, Long> {
-    public List<Likes> findAllByTo(UserPost userPost);
-    public List<Likes> findAllByFrom(User user);
+    List<Likes> findAllByTo(UserPost userPost);
+    List<Likes> findAllByFrom(User user);
 
-    public Boolean existsByFromAndTo(User user, UserPost userPost);
+    Boolean existsByFromAndTo(User user, UserPost userPost);
 
     Optional<Likes> findByFromAndTo(User user, UserPost userPost);
 

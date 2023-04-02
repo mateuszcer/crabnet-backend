@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,6 +33,9 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="from_user")
     private User author;
+
+    @OneToMany(mappedBy = "to")
+    private Set<CommentLike> likedBy;
 
     public Comment(UserPost source, User author, String content) {
         this.source = source;

@@ -45,6 +45,8 @@ public class Mapper {
                 comment.getAuthor().getUsername(),
                 comment.getAuthor().getProfilePicture(),
                 comment.getSource().getId(),
+                comment.getId(),
+                comment.getLikedBy().stream().map(like -> like.getFrom().getUsername()).collect(Collectors.toSet()),
                 comment.getCreateDateTime()
         );
     }

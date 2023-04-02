@@ -1,6 +1,7 @@
 package com.mateuszcer.socialmediaapp.payload.request;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -11,6 +12,7 @@ import lombok.*;
 @ToString
 public class PostCreationRequest {
 
-    @NotEmpty
+    @NotBlank
+    @Size(max = 255, message = "{validation.post.size.too_long}")
     private String content;
 }

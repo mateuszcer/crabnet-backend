@@ -9,6 +9,8 @@ import lombok.*;
 @Setter
 @ToString
 public class BioRequest {
+
+
     private String bio;
 
 }
