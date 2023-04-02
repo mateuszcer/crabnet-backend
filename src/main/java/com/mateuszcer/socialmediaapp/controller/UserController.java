@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin("http://127.0.0.1:5173")
 public class UserController {
 
     private final UserRepository userRepository;

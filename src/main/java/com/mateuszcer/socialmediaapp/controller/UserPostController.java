@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@CrossOrigin("http://127.0.0.1:5173")
 public class UserPostController {
     private final UserPostService userPostService;
 

@@ -32,7 +32,6 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("http://127.0.0.1:5173")
 public class AuthController {
 
 
