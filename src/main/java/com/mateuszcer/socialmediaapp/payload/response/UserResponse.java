@@ -2,6 +2,7 @@ package com.mateuszcer.socialmediaapp.payload.response;
 
 import lombok.*;
 
+
 import java.util.Set;
 
 @Getter
@@ -16,8 +17,8 @@ public class UserResponse {
 
     private Set<UserPostResponse> posts;
 
-    private Set<String> following;
-    private Set<String> followers;
+    private Set<MinimalUserResponse> following;
+    private Set<MinimalUserResponse> followers;
     private String bio;
     private Integer pictureId;
 

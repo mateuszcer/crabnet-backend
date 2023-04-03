@@ -4,6 +4,7 @@ import com.mateuszcer.socialmediaapp.model.Comment;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
 import com.mateuszcer.socialmediaapp.payload.response.CommentResponse;
+import com.mateuszcer.socialmediaapp.payload.response.MinimalUserResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserPostResponse;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,10 @@ public class Mapper {
         return new UserResponse(user.getUsername(), user.getFirstname(),
                 user.getLastname(),
                 user.getPosts().stream().map(this::toResponse).collect(Collectors.toSet()),
-                user.getFollowing().stream().map(followers -> followers.getTo().getUsername()).collect(Collectors.toSet()),
-                user.getFollowers().stream().map(followers -> followers.getFrom().getUsername()).collect(Collectors.toSet()),
+                user.getFollowing().stream().map(followers -> new MinimalUserResponse(followers.getTo().getUsername(),
+                        followers.getTo().getProfilePicture())).collect(Collectors.toSet()),
+                user.getFollowers().stream().map(followers -> new MinimalUserResponse(followers.getFrom().getUsername(),
+                                followers.getFrom().getProfilePicture())).collect(Collectors.toSet()),
                 user.getBio(),
                 user.getProfilePicture()
         );
