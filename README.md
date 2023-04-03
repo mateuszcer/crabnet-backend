@@ -55,6 +55,10 @@ To run this project, you will need to add the following environment variables to
 
 `DATABASE_USER` 
 
+`CLIENT_URL`
+
+`HOSTNAME`
+
 `EMAIL_USER`
 
 `EMAIL_PASSWORD`
