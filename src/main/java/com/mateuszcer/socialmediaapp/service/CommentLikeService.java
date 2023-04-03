@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CommentLikeService {
@@ -70,5 +71,9 @@ public class CommentLikeService {
         }
 
         return Boolean.FALSE;
+    }
+
+    public void deleteAll(Set<CommentLike> commentLikes) {
+        commentLikeRepository.deleteAll(commentLikes);
     }
 }

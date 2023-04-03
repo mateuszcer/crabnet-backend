@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CommentsService {
@@ -48,6 +49,13 @@ public class CommentsService {
     public void delete(Comment comment) {
         commentLikeService.deleteAllByComment(comment);
         commentRepository.delete(comment);
+
+    }
+
+    public void deleteAll(Set<Comment> comments) {
+        for(var comment : comments){
+            delete(comment);
+        }
 
     }
 

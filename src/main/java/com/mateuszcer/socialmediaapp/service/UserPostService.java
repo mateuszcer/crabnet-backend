@@ -18,10 +18,13 @@ public class UserPostService {
     private final LikesService likesService;
     private final CommentsService commentsService;
 
-    public UserPostService(UserPostRepository userPostRepository, LikesService likesService, CommentsService commentsService) {
+    private final CommentLikeService commentLikeService;
+
+    public UserPostService(UserPostRepository userPostRepository, LikesService likesService, CommentsService commentsService, CommentLikeService commentLikeService) {
         this.userPostRepository = userPostRepository;
         this.likesService = likesService;
         this.commentsService = commentsService;
+        this.commentLikeService = commentLikeService;
     }
 
     public final Optional<UserPost> findById(Long id) {
@@ -73,7 +76,7 @@ public class UserPostService {
     }
 
     public void delete(UserPost userPost) {
-
+        commentsService.deleteAll(userPost.getComments());
         likesService.deleteAllByPost(userPost);
         userPostRepository.delete(userPost);
     }
