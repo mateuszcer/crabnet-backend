@@ -42,7 +42,7 @@ public class SignupRequest {
     private Integer pictureId;
 
     public void setUsername(String value){
-        this.username = value.trim();
+        this.username = value.replaceAll(" ", "");
     }
 
     public String getUsername(){
