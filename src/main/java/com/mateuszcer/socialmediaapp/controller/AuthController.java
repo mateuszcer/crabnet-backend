@@ -146,7 +146,7 @@ public class AuthController {
 
 
         User newUser = oldToken.getUser();
-        String appUrl = request.getContextPath();
+        String appUrl = request.getLocalName();
         Locale locale = request.getLocale();
 
         applicationEventPublisher.publishEvent(new OnRegistrationCompleteEvent(newUser, appUrl,

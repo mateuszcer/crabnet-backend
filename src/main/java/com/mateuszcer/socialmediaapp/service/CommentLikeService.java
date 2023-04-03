@@ -56,7 +56,6 @@ public class CommentLikeService {
         if(commentLikeRepository.existsByFromAndTo(user, comment)) {
             return Boolean.FALSE;
         }
-        System.out.println(comment.getContent() + user.getUsername());
         CommentLike commentLike = new CommentLike(user, comment);
         commentLikeRepository.save(commentLike);
         return Boolean.TRUE;
