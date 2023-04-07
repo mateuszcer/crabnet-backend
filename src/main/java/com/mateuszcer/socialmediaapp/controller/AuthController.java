@@ -116,7 +116,6 @@ public class AuthController {
     public RedirectView confirmRegistration
             (WebRequest request, @RequestParam("token") String token) {
         RedirectView redirectView = new RedirectView();
-
         redirectView.setUrl(clientUrl);
         Locale locale = request.getLocale();
 

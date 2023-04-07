@@ -158,11 +158,11 @@ public class WebSecurityConfig {
         if(query == null)
             return null;
 
-        String token = Arrays.stream(query.split("&"))
-                .map(param -> param.split("=")[0].equals("token") ? decode(param.split("=")[1]) : "")
+        String access_token = Arrays.stream(query.split("&"))
+                .map(param -> param.split("=")[0].equals("access_token") ? decode(param.split("=")[1]) : "")
                 .collect(Collectors.joining(""));
-
-        return token;
-
+        if(!access_token.equals(""))
+            return access_token;
+        return null;
     }
 }

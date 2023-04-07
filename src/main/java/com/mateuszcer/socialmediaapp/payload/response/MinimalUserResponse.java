@@ -10,4 +10,8 @@ import lombok.*;
 public class MinimalUserResponse {
     private String username;
     private Integer pictureId;
+
+    private String firstname;
+
+    private String lastname;
 }

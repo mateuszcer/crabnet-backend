@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,5 +49,21 @@ public class SignupRequest {
     public String getUsername(){
         return this.username;
     }
+
+    public void setFirstname(String value) {
+        this.firstname = StringUtils.capitalize(value);
+    }
+    public String getFirstname() {
+        return firstname;
+    }
+
+
+    public void setLastname(String value) {
+        this.lastname = StringUtils.capitalize(value);
+    }
+    public String getLastname() {
+        return lastname;
+    }
+
 
 }
