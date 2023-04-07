@@ -6,10 +6,12 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -23,12 +25,14 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Configuration
 public class WebSecurityConfig {
@@ -38,6 +42,10 @@ public class WebSecurityConfig {
 
     @Value("${crabnet.client.url}")
     private String clientUrl;
+
+
+
+
 
     @Bean
     public KeyPair keyPair() {
@@ -126,7 +134,35 @@ public class WebSecurityConfig {
                     ));
 
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+        http.oauth2ResourceServer()
+                .jwt().and().bearerTokenResolver(this::tokenExtractor);
         http.authenticationProvider(authenticationProvider(passwordEncoder()));
         return http.build();
+    }
+
+    private String decode(String value) {
+        return URLDecoder.decode(value, StandardCharsets.UTF_8);
+    }
+
+    private String tokenExtractor(HttpServletRequest request) {
+
+
+
+
+
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null)
+            return header.replace("Bearer ", "");
+
+        String query = request.getQueryString();
+        if(query == null)
+            return null;
+
+        String token = Arrays.stream(query.split("&"))
+                .map(param -> param.split("=")[0].equals("token") ? decode(param.split("=")[1]) : "")
+                .collect(Collectors.joining(""));
+
+        return token;
+
     }
 }
