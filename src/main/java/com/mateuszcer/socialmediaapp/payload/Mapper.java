@@ -1,5 +1,8 @@
 package com.mateuszcer.socialmediaapp.payload;
 
+import com.mateuszcer.socialmediaapp.chat.model.ChatMessage;
+import com.mateuszcer.socialmediaapp.chat.payload.ChatMessageRequest;
+import com.mateuszcer.socialmediaapp.chat.payload.ChatMessageResponse;
 import com.mateuszcer.socialmediaapp.model.Comment;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.model.UserPost;
@@ -19,14 +22,23 @@ public class Mapper {
         return new UserResponse(user.getUsername(), user.getFirstname(),
                 user.getLastname(),
                 user.getPosts().stream().map(this::toResponse).collect(Collectors.toSet()),
-                user.getFollowing().stream().map(followers -> new MinimalUserResponse(followers.getTo().getUsername(),
-                        followers.getTo().getProfilePicture())).collect(Collectors.toSet()),
-                user.getFollowers().stream().map(followers -> new MinimalUserResponse(followers.getFrom().getUsername(),
-                                followers.getFrom().getProfilePicture())).collect(Collectors.toSet()),
+                user.getFollowing().stream().map(followers -> this.toMinimalResponse(followers.getTo()))
+                        .collect(Collectors.toSet()),
+                user.getFollowers().stream().map(followers -> this.toMinimalResponse(followers.getFrom()))
+                        .collect(Collectors.toSet()),
                 user.getBio(),
                 user.getProfilePicture()
         );
 
+    }
+
+    public MinimalUserResponse toMinimalResponse(User user) {
+        return new MinimalUserResponse(
+                user.getUsername(),
+                user.getProfilePicture(),
+                user.getFirstname(),
+                user.getLastname()
+        );
     }
 
     public UserPostResponse toResponse(UserPost userPost) {
@@ -51,6 +63,14 @@ public class Mapper {
                 comment.getId(),
                 comment.getLikedBy().stream().map(like -> like.getFrom().getUsername()).collect(Collectors.toSet()),
                 comment.getCreateDateTime()
+        );
+    }
+
+    public ChatMessageResponse toResponse(ChatMessage chatMessage) {
+        return new ChatMessageResponse(
+                chatMessage.getContent(),
+                this.toMinimalResponse(chatMessage.getSender()),
+                chatMessage.getCreateDateTime()
         );
     }
 
