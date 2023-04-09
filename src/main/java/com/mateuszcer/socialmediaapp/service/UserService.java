@@ -42,7 +42,10 @@ public class UserService implements IUserService{
     }
     @Override
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isPresent() && userOpt.get().getEnabled())
+            return userOpt;
+        return Optional.empty();
     }
     @Override
     public Boolean existsByUsername(String username) {
@@ -192,7 +195,7 @@ public class UserService implements IUserService{
         List<User> users = userRepository.findByUsernameLike(pattern);
         users.addAll(userRepository.findByFirstnameLike(pattern));
         users.addAll(userRepository.findByLastnameLike(pattern));
-        return users;
+        return users.stream().filter(User::getEnabled).collect(Collectors.toList());
     }
 
     public Boolean updateBio(String username, String bio) {
@@ -222,5 +225,9 @@ public class UserService implements IUserService{
         user.setProfilePicture(id);
         return Boolean.TRUE;
 
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll().stream().filter(User::getEnabled).collect(Collectors.toList());
     }
 }

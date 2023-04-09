@@ -4,7 +4,6 @@ import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.payload.Mapper;
 import com.mateuszcer.socialmediaapp.payload.request.BioRequest;
 import com.mateuszcer.socialmediaapp.payload.response.UserResponse;
-import com.mateuszcer.socialmediaapp.repository.UserRepository;
 import com.mateuszcer.socialmediaapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +19,14 @@ import java.util.stream.Collectors;
 @RestController
 public class UserController {
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
 
 
     private final Mapper mapper;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserService userService, Mapper mapper) {
-
-        this.userRepository = userRepository;
+    public UserController(UserService userService, Mapper mapper) {
         this.userService = userService;
-
         this.mapper = mapper;
     }
 
@@ -40,7 +34,7 @@ public class UserController {
     public ResponseEntity<Iterable<UserResponse>>
     getAllUsers() {
         return ResponseEntity.ok(
-                userRepository.findAll()
+                userService.findAll()
                         .stream()
                         .map(mapper::toResponse)
                         .collect(Collectors.toList()));
