@@ -198,6 +198,10 @@ public class UserService implements IUserService{
         return users.stream().filter(User::getEnabled).collect(Collectors.toList());
     }
 
+    public List<User> getNewUsers() {
+        return userRepository.findFirst15ByOrderByCreationDateTime();
+    }
+
     public Boolean updateBio(String username, String bio) {
         Optional<User> userOpt = userRepository.findByUsername(username);
 

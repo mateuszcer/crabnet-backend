@@ -21,5 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    List<User> findFirst15ByOrderByCreationDateTime();
+
     Boolean existsByEmail(String email);
 }

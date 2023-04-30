@@ -2,7 +2,9 @@ package com.mateuszcer.socialmediaapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,6 +25,9 @@ public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
+
+    @CreationTimestamp
+    private LocalDateTime creationDateTime;
 
     private String firstname;
 

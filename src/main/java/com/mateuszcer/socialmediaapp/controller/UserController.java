@@ -3,6 +3,7 @@ package com.mateuszcer.socialmediaapp.controller;
 import com.mateuszcer.socialmediaapp.model.User;
 import com.mateuszcer.socialmediaapp.payload.Mapper;
 import com.mateuszcer.socialmediaapp.payload.request.BioRequest;
+import com.mateuszcer.socialmediaapp.payload.response.MinimalUserResponse;
 import com.mateuszcer.socialmediaapp.payload.response.UserResponse;
 import com.mateuszcer.socialmediaapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,13 @@ public class UserController {
             return ResponseEntity.ok("Unfollowed");
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping(path="/user/new")
+    public ResponseEntity<List<MinimalUserResponse>> getNewUsers() {
+
+        return ResponseEntity.ok(userService.getNewUsers().stream().map(mapper::toMinimalResponse)
+                .collect(Collectors.toList()));
     }
 
 
