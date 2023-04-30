@@ -63,6 +63,9 @@ public class UserService implements IUserService{
     }
 
     public Boolean followUser(String username, String toFollowUsername) {
+        if(Objects.equals(username, toFollowUsername)) {
+            return Boolean.FALSE;
+        }
         Optional<User> userOpt = userRepository.findByUsername(username);
         Optional<User> toFollowOpt = userRepository.findByUsername(toFollowUsername);
 
