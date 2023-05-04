@@ -69,8 +69,8 @@ public class UserService implements IUserService{
         Optional<User> userOpt = userRepository.findByUsername(username);
         Optional<User> toFollowOpt = userRepository.findByUsername(toFollowUsername);
 
-        if(userOpt.isEmpty() || toFollowOpt.isEmpty()) {
-            return false;
+        if(userOpt.isEmpty() || toFollowOpt.isEmpty() || !toFollowOpt.get().getEnabled()) {
+            return Boolean.FALSE;
         }
 
         User user = userOpt.get();
@@ -202,7 +202,9 @@ public class UserService implements IUserService{
     }
 
     public List<User> getNewUsers() {
-        return userRepository.findFirst15ByOrderByCreationDateTime();
+
+        return userRepository.findFirst15ByOrderByCreationDateTime().stream()
+                .filter(User::getEnabled).collect(Collectors.toList());
     }
 
     public Boolean updateBio(String username, String bio) {
